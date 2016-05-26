@@ -78,7 +78,8 @@ def simulate(l, k):
                     # random < λ/(λ+μα+μβ)) -> arrival
                     total_arrivals += 1
                     arrivals[state] += 1
-                    state += 1
+                    if state < k + 10:
+                        state += 1
                     count += 1
                 elif random_value < lm3:
                     # random < (λ+μα)/(λ+μα+μβ)) -> departure from A
