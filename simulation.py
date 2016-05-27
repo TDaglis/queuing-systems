@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
 import random
+import sys
 
 
 MAX_COUNT = 10000000  # Upper limit for simulation termination
@@ -18,7 +19,7 @@ def simulate(l, k):
     j = k+11  # total possible states of given system
     state = 0  # States of system go from 0 to j. We start from 0
     p = [0]*j  # list of probabilities for every state
-    total_arrivals = 0 # total arrivals
+    total_arrivals = 0  # total arrivals
     arrivals = [0]*j  # list of total arrivals for every state
     lm1 = l/(l+4)  # λ/(λ+μα)
     lm2 = l/(l+4+1)  # λ/(λ+μα+μβ)
@@ -47,10 +48,10 @@ def simulate(l, k):
                     # random < λ/(λ+μα)) -> arrival
                     total_arrivals += 1
                     arrivals[state] += 1
-                    if state==k:
+                    if state == k:
                         # if we're at k state, it's time for B to stop
                         # idling so we move to 2k + 1 state
-                        state=2*k+1
+                        state = 2*k+1
                     else:
                         state += 1
                         count += 1
@@ -106,8 +107,8 @@ def simulate(l, k):
                         count += 1
                 else:
                     # departure
-                     state -= 1
-                     count += 1
+                    state -= 1
+                    count += 1
 
         for i in range(j):
             p[i] = arrivals[i]/total_arrivals
@@ -122,7 +123,7 @@ def simulate(l, k):
             # for i in [0, k] we have i clients in the system with p[i]
             # probability for each state
             avg += i*p[i]
-        avg += p[k+1] # in k+1 state we only have 1 client in B
+        avg += p[k+1]  # in k+1 state we only have 1 client in B
         for i in range(k+2, j):
             # for i in [k+2, k+11) we have i-k clients in our system with p[i]
             # probability for each state
@@ -158,3 +159,14 @@ def simulate(l, k):
     g = ga/gb if gb > 0 else 'INF'
 
     print 'ga = {}\ngb = {}\ng = {}\n'.format(ga, gb, g)
+
+
+if __name__ == '__main__':
+    if len(sys.argv) == 1 or 'help' in sys.argv:
+        print 'Usage:\n {} l(=1,2,3) k(=1,2,...,9)\n'.format(sys.argv[0])
+        sys.exit(0)
+    elif len(sys.argv) != 3:
+        print 'Error. Exactly 2 arguments are required.\n' +\
+            'Example: ./simulation.py 2 7'
+        sys.exit(1)
+    simulate(float(sys.argv[1]), int(sys.argv[2]))
